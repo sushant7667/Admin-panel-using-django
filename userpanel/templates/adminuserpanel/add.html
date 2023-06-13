@@ -1,0 +1,220 @@
+{% extends 'admin_theme/base.html' %}{% load static%}{% block content%}
+<DOCTYPE html>
+  <html>
+
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css"
+      integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous" />
+    <link rel="stylesheet" href="/assets/css/newjs.css" />
+    <title>Document</title>
+  </head>
+
+  <body>
+    {% if messages %}
+    <div class="row" style="justify-content: center">
+      <div class="col-sm-6 col-sm-offset-3">
+        {% for message in messages %}
+        <div style="margin: 15px 0px" class="alert alert-{{ message.tags }} alert-dismissible text-center" role="alert">
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+          <p style="margin-bottom: 0px">{{ message }}</p>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+    {% endif %}
+    <form method="POST" id="dropdown" name="formValidation">
+      {% csrf_token %}
+      <h1 class="text-center">jquery in ajax dropdown</h1>
+      <div class="container maincontainer" style="
+            background: #fe2c75;
+            background: -webkit-linear-gradient(left top, #fe2c75, #324192);
+          ">
+        <div class="signupsection row" style="border-radius: 5px; box-shadow: 0px 0px 85px 0px #333">
+          <div class="form-field col-lg-6">
+            <label for="name" class="form-label">Name:</label>
+            <input type="text" class="form-control" id="Firstnames" placeholder="Enter name" name="Firstname" />
+            <div class="error" id="fnameErr"></div>
+          </div>
+
+          <div class="form-field col-lg-6">
+            <label class="form-label">last name</label>
+            <input type="text" class="form-control" id="Lastname" placeholder="Enter last name" name="Lastname" /><span
+              class="formerror"></span>
+          </div>
+
+          <div class="mt-1 form-field col-lg-6">
+            <label class="form-label">mobile number</label>
+            <input type="phone" class="form-control" id="mobile_no" placeholder="enter mobile number"
+              name="mobile_no" />
+          </div>
+
+          <div class="mt-1 form-field col-lg-6">
+            <label class="form-label">gender</label>
+            <input type="text" class="form-control" id="gender" placeholder="gender" name="gender" />
+          </div>
+
+          <div class="mt-1 form-field col-lg-6">
+            <label class="form-label">email</label>
+            <input type="email" class="form-control" id="email" placeholder="email" name="email" />
+          </div>
+
+          <!-- <div class="mt-1 form-field col-lg-6">
+            <label class="form-label">Email</label>
+            <input type="text" class="form-control" id="email" placeholder="Enter email" name="email">
+          </div> -->
+          <div class="mt-5 form-label col-lg-6">
+            <label for="name" class="form-label">country:</label>
+            <select name="countryId" id="country">
+              <option value="">select country</option>
+              {{country}} {%for i in countryList%}
+              <option value="{{i.id}}">{{i.cname}}</option>
+              {%endfor%}
+            </select>
+          </div>
+
+          <div class="stclass mt-4 col-lg-6">
+            <label class="form-label">states</label>
+            <select name="stateId" id="states">
+              <option value="">select state</option>
+              {%for j in stateList%}
+              <option value="{{j.id}}">{{j.sname}}</option>
+              {%endfor%}
+            </select>
+            <br />
+          </div>
+          <button class="btn btn-primary done mt-5 margin-left:16rem;" type="submit" id="add-name" name="submit">
+            submit
+          </button>
+        </div>
+      </div>
+    </form>
+  </body>
+  
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.min.js" 
+  integrity="sha512-rstIgDs0xPgmG6RX1Aba4KV5cWJbAMcvRCVmglpam9SoHZiUCyQVDdH2LPlxoHtrv17XWblE/V/PP+Tr04hbtA==" 
+  crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script src="https://code.jquery.com/jquery-3.6.1.min.js" integrity="sha256-o88AwQnZB+VDvE9tvIXrMQaPlFFSUTR+nldQm1LuPXQ=" crossorigin="anonymous"></script>
+  <script type="text/javascript" src="http://www.chartjs.org/assets/Chart.js">
+  </script>
+  <script src="js/jquery.min.js" type="text/javascript"></script>
+  <script src="js/jquery.dataTables.min.js" type="text/javascript"></script>
+  <!-- script src="http://code.jquery.com/jquery-1.10.1.min.js" -->
+  <script>
+
+  //   var form = document.getElementById("dropdown");
+  //   form.addEventListener("submit", formValidation);
+  // function formValidation(e) {
+  //   e.preventDefault();
+  //  var Firstname=document.getElementById("Firstnames").value;
+
+  //   if(Firstname == ""){
+  //       document.getElementById('fnameErr').innerHTML =" Please Enter the Firstname";
+  //       return false;
+  //   }
+  // }
+    $("#add-name").on("click", function () {
+      var order = {
+        // name: $("#Firstname").val(),
+        midname: $("#Lastname").val(),
+        number: $("#mobile_no").val(),
+        gender: $("#gender").val(),
+        countryId: $("#country").val(),
+        stateId: $("#states").val(),
+      };
+
+      alert("successfully submited");
+      $.ajax({
+        type: "POST",
+        url: "http://127.0.0.1:8000/getusermaster",
+        data: order,
+        success: function (newOrder) {
+          console.log("new", newOrder);
+        },
+      });
+    });
+
+    $("#country").change(function () {
+      var url = $("#dropdown");
+      var countryId = $(this).val();
+
+      $.ajax({
+        type: "POST",
+        url: "http://127.0.0.1:8000/Empmaster/getstate",
+
+        data: {
+          countryId: countryId,
+        },
+        success: function (data) {
+          let html_data = '<option value=""> select State</option>';
+          data.forEach(function (data) {
+            html_data += `<option value="${data.id}">${data.sname}</option>`;
+          });
+          $("#states").html(html_data);
+        },
+      });
+      $('#dropdown').validate({
+      rules:{
+        Firstname:"required"
+      },messages:{
+        Firstname:"required name"
+      }
+    })
+    });
+
+      // if(midname == ""){
+      //     document.getElementById('Lastname').innerHTML =" Please Enter the Lastname";
+      //     return false;
+      // }
+
+      // if(email == ""){
+      //     document.getElementById('emailErr').innerHTML ="Please Enter the email id";
+      //     // return false;
+      // }
+      // else{
+      //     var eregular = /^\S+@\S+\.\S+$/;
+      //     if (eregular.test(email)===false){
+      //         document.getElementById('emailErr').innerHTML ="Please Enter Valid email id";
+      //         return false;
+      //     }
+
+      // }
+
+      // if(number == ""){
+      //     document.getElementById('mobile_no').innerHTML ="Please Enter the mobile number ";
+
+      //     // return false;
+      // }
+      // else
+      // {
+      //     var numbrege = /^[1-9]\d{9}$/;
+      //     if(numbrege.test(PhoneNumber)===false){
+      //         document.getElementById('mobile_no').innerHTML ="Please Enter correct mobile number ";
+      //         return false;
+      //     }
+      // }
+
+      // if (countryId == "Select a Qualification") {
+      //     document.getElementById('country').innerHTML="please select one option";
+      //     return false;
+      // }
+      // if (hobbies == ""){
+      //     document.getElementById('hobbieErr').innerHTML =" Please select atleast one option";
+      //     return false
+      // }
+
+      // if(comment == ""){
+      //     document.getElementById('commErr').innerHTML =" Please fill the commentbox";
+      //     return false;
+      // }
+
+  </script>
+
+  </html>
+  {% endblock %}
+</DOCTYPE>

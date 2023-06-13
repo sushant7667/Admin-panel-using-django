@@ -1,0 +1,59 @@
+{% extends 'admin_theme/base.html' %}{% load static%}{% block content%}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  {% if messages %}
+    <div class="row" style="justify-content: center;">
+      <div class="col-sm-6 col-sm-offset-3">
+        {% for message in messages %}
+        <div style="margin:15px 0px" class="alert alert-{{ message.tags }} alert-dismissible text-center" role="alert">
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+          <p style="margin-bottom: 0px;">{{ message }}</p>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+    {% endif %}
+  <form action="" method="post">
+  {% csrf_token %}
+        <table class="table">
+            <thead>
+              <tr>
+                <th>Firstname</th>
+                <th>mobile_no</th>                
+                <th>email</th>
+                <th>Role</th>
+                <th>update</th>
+
+                <th>delete</th>
+              </tr>
+               <td>{{GetData.email}}</td>
+              
+                {% for i in GetData %}
+              <tr>             
+                <td>{{i.Name}}</td>
+                <td>{{i.number}}</td>
+                <td>{{i.email}}</td>
+                <td>{{i.role_id}}</td>
+
+                <td><a href="{% url 'usermasterfront:updateUser' i.id %}" style="text-decoration:none">update</a></td> 
+                <td><a href="{% url 'usermasterfront:deletemasterdata' i.id %}" style="text-decoration:none">delete</a></td>
+              </tr>
+              {% endfor %}
+          </table>
+        </form>
+    </body>
+</html>
+{%endblock%}
+
+
+                  

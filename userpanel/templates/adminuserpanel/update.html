@@ -1,0 +1,150 @@
+{% extends 'admin_theme/base.html' %}{% load static%}{% block content%}
+<DOCTYPE html>
+    <html>
+  
+    <head>
+      <meta charset="UTF-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css" 
+      integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+      <link rel="stylesheet" href="/assets/css/newjs.css" >
+      <title>Document</title>
+    </head>
+  
+    <body>
+      {% if messages %}
+      <div class="row" style="justify-content: center;">
+        <div class="col-sm-6 col-sm-offset-3">
+          {% for message in messages %}
+          <div style="margin:15px 0px" class="alert alert-{{ message.tags }} alert-dismissible text-center" role="alert">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+            <p style="margin-bottom: 0px;">{{ message }}</p>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+      {% endif %}
+      <form  method="POST" id="dropdown">
+        {% csrf_token %}
+        <h1 class="text-center"> Update here your's details  </h1>
+        <div class="container maincontainer" style="background: #FE2C75;
+        background: -webkit-linear-gradient(left top, #FE2C75, #324192); ">
+          <div class="signupsection row" style="border-radius: 5px; box-shadow: 0px 0px 85px 0px #333;">  
+          <div class=" form-field col-lg-6">
+            <label for="name" class="form-label">Name:</label>
+            <input type="text" class="form-control" id="Firstname" placeholder="Enter namee" name="Firstname"value="{{GetData.Firstname}}">
+          </div>
+  
+          <div class=" form-field col-lg-6">
+            <label class="form-label">last name</label>
+            <input type="text" class="form-control" id="Lastname" placeholder="Enter last name" name="Lastname"value="{{GetData.Lastname}}">
+          </div>
+  
+  
+          <div class="mt-1 form-field col-lg-6">
+            <label class="form-label">mobile number</label>
+            <input type="text" class="form-control" id="mobile_no" placeholder="enter mobile number" name="mobile_no"value="{{GetData.mobile_no}}">
+          </div>
+        
+          <div class="mt-1 form-field col-lg-6">
+            <label class="form-label">gender</label>
+            <input type="text" class="form-control" id="gender" placeholder="gender" name="gender"value="{{GetData.gender}}">
+          </div>
+
+          <div class="mt-1 form-field col-lg-6">
+            <label class="form-label">email</label>
+            <input type="text" class="form-control" id="email" placeholder="email" name="email"value="{{GetData.email}}">
+          </div>
+          <div class="mt-5 form-label col-lg-6">
+
+            <label for="name" class="form-label">country:</label>
+            <select name="countryId" id="country">
+              <option value="">select country</option>
+              {{country}}
+              {%for i in countryList%}
+              {%if GetData.countryId == i.id%}
+              <option value="{{i.id}}"selected>{{i.cname}}</option>
+              {% endif %}
+              <option value="{{i.id}}">{{i.cname}}</option>
+              {%endfor%}
+            </select>
+          </div>
+  
+          <div class="stclass mt-4 col-lg-6">
+            <label class="form-label" >states</label>
+            <select name="stateId" id="states">
+              <option value="">select state</option>
+              {%for j in stateList%}
+              {%if GetData.stateId == j.id%}
+              <option value="{{j.id}}"selected>{{j.sname}}</option>
+              {% endif %}
+              <option value="{{j.id}}">{{j.sname}}</option>
+              {%endfor%}
+
+              {{states}}
+  
+            </select>
+            <br>
+            
+          </div>
+          <button class="btn  btn-primary done mt-5 margin-left:16rem;" type="submit" id="add-name">submit</button>
+        </div>
+          </div>
+  
+      </form>
+    </body>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script>
+      $('#add-name').on('click', function () {
+        debugger;
+        var order = {
+          name: $('#Firstname').val(),
+          midname: $('#Lastname').val(),
+          surname: $('#mobile_no').val(),
+          gender: $('#gender').val(),
+          countryId: $('#country').val(),
+          stateId: $('#states').val(),
+
+        }
+  
+        $.ajax({
+          type: 'POST',
+          url: 'http://127.0.0.1:8000/getusermaster',
+          data: order,
+          success: function (newOrder) {
+            console.log("new", newOrder)
+  
+          }
+        });
+      })
+  
+      $("#country").change(function () {
+      var url = $("#dropdown");
+      var countryId = $(this).val();
+
+      $.ajax({
+        type:"POST",
+        url:'http://127.0.0.1:8000/Empmaster/getstate',
+
+        data: {
+
+          'countryId': countryId
+
+        },
+        success: function (data) {
+
+          let html_data = '<option value=""> select State</option>';
+          data.forEach(function (data) {
+            html_data += `<option value="${data.id}">${data.sname}</option>`
+          });
+          $("#states").html(html_data);
+          }
+        })
+      })
+    </script>
+  
+    </html>
+    {% endblock %}
